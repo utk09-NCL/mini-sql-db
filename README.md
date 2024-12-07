@@ -6,6 +6,11 @@ A file-based SQL database written in JavaScript. Uses SQLite-like syntax for que
 
 mini-sql-db/
 |--- lib/
+|    |--- storage.js     # Creating JSON files to store data and run read/write operations
+|    |---
+|    |---
+|    |---
+|    |---
 |    |---
 |--- logger/
 |    |--- logger.js
