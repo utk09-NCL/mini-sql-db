@@ -1,0 +1,19 @@
+{
+  "name": "@utk09/mini-sql-db",
+  "version": "1.0.0",
+  "description": "A light-weight, file-based, SQL database in JavaScript.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "@utk09-NCL",
+  "license": "MIT",
+  "devDependencies": {
+    "@eslint/js": "9.16.0",
+    "eslint": "9.16.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-prettier": "5.2.1",
+    "globals": "15.13.0"
+  }
+}

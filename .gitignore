@@ -1,0 +1,22 @@
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode
+.idea
+
+# Local env files
+.env
+.env.local
+.env.production
+.env.development
+
+# Database
+database/
+backup/
+
+# Logs
+logs/

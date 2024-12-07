@@ -1,0 +1,15 @@
+# Creating a table
+CREATE TABLE users (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  age INTEGER
+)
+
+# Inserting into a table
+INSERT INTO users (id, name, age) VALUES (1, "Alice", 30);
+INSERT INTO users (id, name, age) VALUES (2, "John", 45);
+
+# Selecting Data
+SELECT name FROM users;
+SELECT name, age FROM users;
+SELECT * FROM users;
