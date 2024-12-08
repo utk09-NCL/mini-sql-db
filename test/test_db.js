@@ -1,4 +1,5 @@
 import pc from "picocolors";
+import assert from "assert";
 import { logger } from "../logger/logger.js";
 import { createTable } from "../lib/schema.js";
 import { insertInto, select } from "../lib/query.js";
@@ -18,7 +19,7 @@ function testCreateTable_v1() {
 
 function testInsertInto_v1() {
   const insertQuery_1 =
-    'INSERT INTO users (id, name, age, student) VALUES (101, "ALICE", 22, true)';
+    'INSERT INTO users (id, name, age, student) VALUES (101, "Alice", 22, true)';
   const insertQuery_2 = 'INSERT INTO users (id, name, age, student) VALUES (102, "Bob", 25, true)';
   const insertQuery_3 =
     'INSERT INTO users (id, name, age, student) VALUES (103, "John", 32, false)';
@@ -111,13 +112,58 @@ async function testLocks_v1() {
 
     await Promise.allSettled(promises);
 
+    // Verify that both records have been inserted
+    const selectQueries = ["SELECT * FROM users"];
+
+    selectQueries.forEach((query) => select(query));
+
     logger("[TEST]", pc.magenta, console.info, "Locks test passed\n");
   } catch (error) {
     logger("[TEST]", pc.magenta, console.error, "Locks test failed\n", error);
   }
 }
 
-export const main = () => {
+function testAggregations_v1() {
+  try {
+    const aggregationQueries = [
+      {
+        query: "SELECT COUNT(*) AS total_users FROM users",
+        expected: { total_users: 8 }, // 6 initial inserts + 2 concurrent inserts from testLocks_v1()
+      },
+      {
+        query: "SELECT COUNT(age) AS age_count FROM users",
+        expected: { age_count: 8 }, // All rows have age defined
+      },
+      {
+        query: "SELECT AVG(age) AS average_age FROM users",
+        expected: { average_age: 22.375 }, // (22 + 25 + 32 + 28 + 10 + 10 + 23 + 29) / 8
+      },
+      {
+        query: "SELECT AVG(age) AS average_age_more_than_10 FROM users WHERE age > 10",
+        expected: { average_age_more_than_10: 26.5 }, // (22 + 25 + 32 + 28 + 23 + 29) / 6
+      },
+    ];
+
+    for (const agg of aggregationQueries) {
+      const result = select(agg.query);
+      const key = Object.keys(agg.expected)[0];
+      const actual = parseFloat(result[0][key]);
+      const expected = agg.expected[key];
+      assert.strictEqual(
+        actual,
+        expected,
+        `Aggregation "${key}" expected to be "${expected}" but got "${actual}"`,
+      );
+      logger("[TEST]", pc.magenta, console.info, `Aggregation test for "${key}" passed\n`);
+    }
+
+    logger("[TEST]", pc.magenta, console.info, "Aggregation tests passed\n");
+  } catch (error) {
+    logger("[TEST]", pc.magenta, console.error, "Aggregation tests failed\n", error);
+  }
+}
+
+export const main = async () => {
   testCreateTable_v1();
   testInsertInto_v1();
   testSelect_v1();
@@ -125,7 +171,8 @@ export const main = () => {
   testSearchWithIndex_v1();
   testBackupDatabase_v1();
   testRestoreDatabase_v1();
-  testLocks_v1();
+  await testLocks_v1();
+  testAggregations_v1();
 };
 
 main();
