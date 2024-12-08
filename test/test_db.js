@@ -2,6 +2,7 @@ import pc from "picocolors";
 import { logger } from "../logger/logger.js";
 import { createTable } from "../lib/schema.js";
 import { insertInto, select } from "../lib/query.js";
+import { createIndex, searchWithIndex } from "../lib/indexing.js";
 
 function testCreateTable_v1() {
   const createTableQuery = "CREATE TABLE users (id int, name txt, age int, student boolean)";
@@ -21,12 +22,14 @@ function testInsertInto_v1() {
     'INSERT INTO users (id, name, age, student) VALUES (103, "John", 32, false)';
   const insertQuery_4 = 'INSERT INTO users (id, name, age, student) VALUES (104, "Tom", 28, true)';
   const insertQuery_5 = 'INSERT INTO users (id, name, age, student) VALUES (105, "MLH", 10, false)';
+  const insertQuery_6 = 'INSERT INTO users (id, name, age, student) VALUES (106, "GHW", 10, false)';
   try {
     insertInto(insertQuery_1);
     insertInto(insertQuery_2);
     insertInto(insertQuery_3);
     insertInto(insertQuery_4);
     insertInto(insertQuery_5);
+    insertInto(insertQuery_6);
     logger("[TEST]", pc.magenta, console.info, "Insert test passed\n");
   } catch (error) {
     logger("[TEST]", pc.magenta, console.error, "Insert test failed\n", error);
@@ -45,10 +48,32 @@ function testSelect_v1() {
   }
 }
 
+function testCreateIndex_v1() {
+  try {
+    createIndex("users", "name");
+    createIndex("users", "age");
+    logger("[TEST]", pc.magenta, console.info, "Create Index test passed\n");
+  } catch (error) {
+    logger("[TEST]", pc.magenta, console.error, "Create Index test failed\n", error);
+  }
+}
+
+function testSearchWithIndex_v1() {
+  try {
+    searchWithIndex("users", "name", "John");
+    searchWithIndex("users", "age", 10);
+    logger("[TEST]", pc.magenta, console.info, "Search Index test passed\n");
+  } catch (error) {
+    logger("[TEST]", pc.magenta, console.error, "Search Index test failed\n", error);
+  }
+}
+
 export const main = () => {
   testCreateTable_v1();
   testInsertInto_v1();
   testSelect_v1();
+  testCreateIndex_v1();
+  testSearchWithIndex_v1();
 };
 
 main();

@@ -13,3 +13,6 @@ INSERT INTO users (id, name, age) VALUES (2, "John", 45);
 SELECT name FROM users;
 SELECT name, age FROM users;
 SELECT * FROM users;
+
+# Indexing
+CREATE INDEX idx_name ON users (name)
