@@ -1,14 +1,27 @@
 {
   "name": "@utk09/mini-sql-db",
-  "version": "2.0.1",
-  "description": "A light-weight, file-based, SQL database in JavaScript.",
+  "version": "2.0.2",
+  "description": "A light-weight, file-based, SQL-like syntax implemented database for Node.js",
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "test": "node test/test_db.js"
   },
   "author": "@utk09-NCL",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/utk09-NCL/mini-sql-db"
+  },
   "license": "MIT",
+  "keywords": [
+    "sql",
+    "database",
+    "mini-sql-db",
+    "javascript",
+    "nodejs"
+  ],
   "devDependencies": {
     "@eslint/js": "9.16.0",
     "eslint": "9.16.0",
