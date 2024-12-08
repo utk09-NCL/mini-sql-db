@@ -4,6 +4,7 @@ import { createTable } from "../lib/schema.js";
 import { insertInto, select } from "../lib/query.js";
 import { createIndex, searchWithIndex } from "../lib/indexing.js";
 import { backupDatabase, restoreDatabase } from "../lib/backup.js";
+import { performWithLock } from "../lib/locks.js";
 
 function testCreateTable_v1() {
   const createTableQuery = "CREATE TABLE users (id int, name txt, age int, student boolean)";
@@ -87,6 +88,35 @@ function testRestoreDatabase_v1() {
   }
 }
 
+async function testLocks_v1() {
+  try {
+    const insertQueries = [
+      'INSERT INTO users (id, name, age, student) VALUES (107, "Eve", 23, true)',
+      'INSERT INTO users (id, name, age, student) VALUES (108, "Josh", 29, false)',
+    ];
+
+    const performInsert = (query, taskName) =>
+      performWithLock("users", async () => {
+        logger("[TEST]", pc.magenta, console.info, `${taskName} started`);
+        insertInto(query);
+
+        await new Promise((res) => setTimeout(res, 5000)); // 5 seconds
+        logger("[TEST]", pc.magenta, console.info, `${taskName} completed`);
+      });
+
+    const promises = [
+      performInsert(insertQueries[0], "Task 1"),
+      performInsert(insertQueries[1], "Task 2"),
+    ];
+
+    await Promise.allSettled(promises);
+
+    logger("[TEST]", pc.magenta, console.info, "Locks test passed\n");
+  } catch (error) {
+    logger("[TEST]", pc.magenta, console.error, "Locks test failed\n", error);
+  }
+}
+
 export const main = () => {
   testCreateTable_v1();
   testInsertInto_v1();
@@ -95,6 +125,7 @@ export const main = () => {
   testSearchWithIndex_v1();
   testBackupDatabase_v1();
   testRestoreDatabase_v1();
+  testLocks_v1();
 };
 
 main();
