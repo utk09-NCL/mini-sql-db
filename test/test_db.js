@@ -3,6 +3,7 @@ import { logger } from "../logger/logger.js";
 import { createTable } from "../lib/schema.js";
 import { insertInto, select } from "../lib/query.js";
 import { createIndex, searchWithIndex } from "../lib/indexing.js";
+import { backupDatabase, restoreDatabase } from "../lib/backup.js";
 
 function testCreateTable_v1() {
   const createTableQuery = "CREATE TABLE users (id int, name txt, age int, student boolean)";
@@ -68,12 +69,32 @@ function testSearchWithIndex_v1() {
   }
 }
 
+function testBackupDatabase_v1() {
+  try {
+    backupDatabase("./backup");
+    logger("[TEST]", pc.magenta, console.info, "Backup DB test passed\n");
+  } catch (error) {
+    logger("[TEST]", pc.magenta, console.error, "Backup DB test failed\n", error);
+  }
+}
+
+function testRestoreDatabase_v1() {
+  try {
+    restoreDatabase("./backup");
+    logger("[TEST]", pc.magenta, console.info, "Restore DB test passed\n");
+  } catch (error) {
+    logger("[TEST]", pc.magenta, console.error, "Restore DB test failed\n", error);
+  }
+}
+
 export const main = () => {
   testCreateTable_v1();
   testInsertInto_v1();
   testSelect_v1();
   testCreateIndex_v1();
   testSearchWithIndex_v1();
+  testBackupDatabase_v1();
+  testRestoreDatabase_v1();
 };
 
 main();
