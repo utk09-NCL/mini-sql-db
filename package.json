@@ -1,6 +1,6 @@
 {
   "name": "@utk09/mini-sql-db",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A light-weight, file-based, SQL database in JavaScript.",
   "type": "module",
   "main": "index.js",
